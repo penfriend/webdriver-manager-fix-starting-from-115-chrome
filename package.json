@@ -1,7 +1,7 @@
 {
-  "name": "webdriver-manager",
-  "version": "12.1.9",
-  "description": "A selenium server and browser driver manager for your end to end tests.",
+  "name": "webdriver-manager-fix-starting-from-115-chrome",
+  "version": "1.0.0",
+  "description": "A selenium server and browser driver manager for your end to end tests with a fix to solve the issue starting from 115 chrome. To use it in protractor please install the package protractor-fix-starting-from-115-chrome. Here is more information about the changes from 115 chrome: https://developer.chrome.com/docs/chromedriver/downloads/version-selection",
   "scripts": {
     "format": "gulp format",
     "format-enforce": "gulp format:enforce",
@@ -30,13 +30,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/angular/webdriver-manager.git"
+    "url": "https://github.com/penfriend/protractor-fix-starting-from-115-chrome.git"
   },
   "bin": {
     "webdriver-manager": "bin/webdriver-manager"
   },
   "main": "built/lib/webdriver.js",
-  "author": "Craig Nishina <craig.nishina@gmail.com>",
+  "author": "Craig Nishina <craig.nishina@gmail.com>, Diana Holik <dianapenfriend@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "adm-zip": "^0.5.2",

@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import * as semver from 'semver';
 
 import {Config} from '../config';
@@ -65,9 +67,36 @@ export class ChromeXml extends XmlConfigSource {
    * Gets the latest item from the XML.
    */
   private getLatestChromeDriverVersion(): Promise<BinaryUrl> {
-    const latestReleaseUrl = 'https://chromedriver.storage.googleapis.com/LATEST_RELEASE';
-    return requestBody(latestReleaseUrl).then(latestVersion => {
-      return this.getSpecificChromeDriverVersion(latestVersion);
+    const latestRealease =
+        'https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json';
+    return requestBody(latestRealease).then(body => {
+      const latestStableReleaseBody = JSON.parse(body)['channels']['Stable'];
+      const latestStableVersion = latestStableReleaseBody['version'];
+      const latestStableVersionUrl = latestStableReleaseBody['downloads']['chromedriver'].find(
+          (obj: any) => obj['platform'] == 'win32')['url'];
+
+      const latestMajorVersion = latestStableVersion.split('.')[0];
+      const localVersionFileName =
+          fs.readdirSync(path.resolve(__dirname, '..', '..', '..', 'selenium'))
+              .find((f: any) => f.startsWith(`chromedriver_${latestMajorVersion}`)) ||
+          '';
+
+      const localVersion = localVersionFileName.slice(13, -4);
+      const localVersionUrl = latestStableVersionUrl.replace(latestStableVersion, localVersion);
+
+      const localMajorVersion = localVersion.split('.')[0];
+
+      if (latestMajorVersion == localMajorVersion) {
+        return Promise.resolve({
+          url: localVersionUrl,
+          version: localVersion,
+        })
+      } else {
+        return Promise.resolve({
+          url: latestStableVersionUrl,
+          version: latestStableVersion,
+        })
+      }
     });
   }
 
